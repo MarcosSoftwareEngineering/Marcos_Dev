@@ -70,32 +70,13 @@ const PROJETOS_DEFAULT = [
     img: "https://images.unsplash.com/photo-1586528116311-ad8ed7c83a7a?auto=format&fit=crop&w=800&q=80",
     mockupImg: "https://images.unsplash.com/photo-1586528116311-ad8ed7c83a7a?auto=format&fit=crop&w=600&h=1200&q=80",
     link: "https://marvinsitbilders.com"
-  },
-  { 
-    id: 5, 
-    titulo: "Landing Page Psicologia", 
-    desc: "Página de captura premium para profissional de saúde, integrada com sistema de agendamento e checkout de consultas.", 
-    tags: ["Landing Page", "Conversão", "UX"], 
-    img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80",
-    mockupImg: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&h=1200&q=80",
-    link: "https://marvinsitbilders.com"
-  },
-  { 
-    id: 6, 
-    titulo: "Quiz App Interativo", 
-    desc: "Aplicativo de perguntas e respostas dinâmicas, com gamificação e cálculo de pontuação instantânea, desenvolvido para engajamento.", 
-    tags: ["React", "Gamificação", "Lógica"], 
-    img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
-    mockupImg: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&h=1200&q=80",
-    link: "https://marvinsitbilders.com"
   }
 ];
 
 const DEPOIMENTOS = [
   { id: 1, nome: "Startup Financeira", tempo: "Cliente há 6 meses", texto: "O Marcos transformou nossa ideia em um MVP funcional em tempo recorde. A Landing Page converteu 3x mais que a antiga.", foto: "https://randomuser.me/api/portraits/men/32.jpg" },
   { id: 2, nome: "Ana Boutique", tempo: "E-commerce lançado", texto: "Eu não entendia nada de sites. Ele me explicou tudo, configurou o domínio e meu blog já está aparecendo no Google.", foto: "https://randomuser.me/api/portraits/women/44.jpg" },
-  { id: 3, nome: "Roberto Gym", tempo: "Site Institucional", texto: "Design impecável e ultra rápido no celular. Meus alunos adoraram a facilidade para ver os horários.", foto: "https://randomuser.me/api/portraits/men/46.jpg" },
-  { id: 4, nome: "Agência VOA", tempo: "Parceiro Recorrente", texto: "Código limpo, organizado e componentizado. É raro achar um dev que também tenha bom gosto para design.", foto: "https://randomuser.me/api/portraits/women/68.jpg" }
+  { id: 3, nome: "Roberto Gym", tempo: "Site Institucional", texto: "Design impecável e ultra rápido no celular. Meus alunos adoraram a facilidade para ver os horários.", foto: "https://randomuser.me/api/portraits/men/46.jpg" }
 ];
 
 const FOTO_PERFIL_MARCOS = fotoPerfil;
@@ -104,29 +85,21 @@ export default function LandingPageDev() {
   const [modo, setModo] = useState('cliente'); 
   const [adminTab, setAdminTab] = useState('agenda'); 
   const [isPromoAtiva, setIsPromoAtiva] = useState(new Date() < DATA_LIMITE);
-  
-  // ESTADO DO MENU MOBILE
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [agenda, setAgenda] = useState(() => {
     try {
       const salvo = localStorage.getItem('agenda_dev_pro_v5');
-      if (salvo) {
-        const parsed = JSON.parse(salvo);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) { console.error(e); }
+      if (salvo) return JSON.parse(salvo);
+    } catch (e) {}
     return gerarAgendaAutomatica();
   });
 
   const [projetos, setProjetos] = useState(() => {
     try {
       const salvo = localStorage.getItem('projetos_dev_pro_v5');
-      if (salvo) {
-        const parsed = JSON.parse(salvo);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) { console.error(e); }
+      if (salvo) return JSON.parse(salvo);
+    } catch (e) {}
     return PROJETOS_DEFAULT;
   });
 
@@ -151,8 +124,10 @@ export default function LandingPageDev() {
   const [timeLeft, setTimeLeft] = useState({ dias: 0, horas: 0, min: 0, seg: 0 });
   const [typedText, setTypedText] = useState('');
   
+  // TEXTO COM QUEBRA DE LINHA
   const fullText = "Marcos Software\nEngineering_"; 
 
+  // ÁUDIO DO TECLADO
   const [audioTeclado] = useState(() => {
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     audio.volume = 0.5;
@@ -246,13 +221,8 @@ export default function LandingPageDev() {
 
   const adicionarProjeto = () => {
     const novo = { 
-      id: Date.now(), 
-      titulo: "Novo Projeto", 
-      desc: "Descrição curta do projeto...", 
-      tags: ["Tag1", "Tag2"], 
-      img: "", 
-      mockupImg: "", 
-      link: "#" 
+      id: Date.now(), titulo: "Novo Projeto", desc: "Descrição...", 
+      tags: ["Tag1", "Tag2"], img: "", mockupImg: "", link: "#" 
     };
     setProjetos([novo, ...projetos]);
   };
@@ -355,16 +325,11 @@ export default function LandingPageDev() {
           
           {/* LOGO BLINDADA CONTRA TRADUÇÃO */}
           <div className="logo-area clickable-profile notranslate" translate="no" onClick={() => setIsAboutModalOpen(true)}>
-            <img 
-              src={FOTO_PERFIL_MARCOS} 
-              alt="Marcos" 
-              className="logo-img-circular" 
-              onError={(e) => { e.target.src = "https://via.placeholder.com/35/00f2ea/000000?text=M" }}
-            />
+            <img src={FOTO_PERFIL_MARCOS} alt="Marcos" className="logo-img-circular" onError={(e) => { e.target.src = "https://via.placeholder.com/35/00f2ea/000000?text=M" }} />
             <span className="logo-text">Marcos<span className="primary-text">SoftwareEngineering</span>_</span>
           </div>
 
-          {/* NAVEGAÇÃO CENTRAL */}
+          {/* NAVEGAÇÃO CENTRAL: ETIQUETAS BRANCAS / LINKS VERDES */}
           {modo === 'cliente' && (
             <nav className="top-nav hide-mobile">
               <span className="nav-link" onClick={() => setIsAboutModalOpen(true)}>
@@ -430,12 +395,7 @@ export default function LandingPageDev() {
           
           <div className="about-modal-content interactive-card hover-float" onClick={e => e.stopPropagation()}>
             <div className="about-modal-header">
-                <img 
-                  src={FOTO_PERFIL_MARCOS} 
-                  alt="Marcos" 
-                  className="about-modal-photo" 
-                  onError={(e) => { e.target.src = "https://via.placeholder.com/80/00f2ea/000000?text=M" }}
-                />
+                <img src={FOTO_PERFIL_MARCOS} alt="Marcos" className="about-modal-photo" onError={(e) => { e.target.src = "https://via.placeholder.com/80/00f2ea/000000?text=M" }} />
                 <div className="about-modal-name-area">
                     <h2>Marcos software engineer</h2>
                     <p className="about-modal-username primary-text">@MarcosSoftwareEngineering · he/him</p>
@@ -720,14 +680,14 @@ export default function LandingPageDev() {
             </div>
           )}
 
-          {/* HERO COM TEXTO BLINDADO CONTRA TRADUÇÃO (Para não quebrar no Google Translate) */}
+          {/* HERO COM TEXTO BLINDADO E COR VERDE NEON NO TÍTULO */}
           <section className="hero-section-pro">
             <div className="container hero-grid">
               <div className="hero-text-content">
                 <div className="badge-lp"><Cpu size={14} /> Software Engineer</div>
                 
                 <h1 className="main-headline dynamic-typing notranslate" translate="no" style={{minHeight: '130px', position: 'relative'}}>
-                  <span style={{color: 'var(--text-main)'}}>
+                  <span style={{color: 'var(--primary)', textShadow: '0 0 10px rgba(0, 242, 234, 0.4)'}}>
                     {typedText.split('\n').map((line, i, arr) => (
                       <React.Fragment key={i}>
                         {line}
@@ -736,7 +696,7 @@ export default function LandingPageDev() {
                     ))}
                   </span>
                   
-                  <span className="cursor-blink">|</span>
+                  <span className="cursor-blink" style={{color: 'var(--primary)'}}>|</span>
 
                   {typedText.length === fullText.length && (
                     <button onClick={resetTyping} className="btn-replay-typing" title="Repetir animação com áudio">
@@ -1077,11 +1037,11 @@ const LP_PRO_STYLES = `
   .logo-text { font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -0.5px; font-family: monospace; }
   
   /* =========================================================
-     NAVEGAÇÃO SUPERIOR NO HEADER (VERDE/BRANCO)
+     ESTILOS DA NAVEGAÇÃO SUPERIOR NO HEADER (Links Verdes / Etiquetas Brancas)
   ========================================================= */
   .top-nav { display: flex; align-items: center; gap: 15px; margin: 0 auto; justify-content: center; flex: 1; }
   .nav-link { color: var(--primary) !important; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; transition: color 0.3s ease, text-shadow 0.3s ease; }
-  .nav-label-white { color: #fff; margin-right: 4px; transition: 0.3s ease; }
+  .nav-label-white { color: #fff; margin-right: 4px; transition: 0.3s ease; font-weight: 500; }
   .nav-link:hover, .nav-link:hover .nav-label-white { color: #ffffff !important; text-shadow: 0 0 8px rgba(0,242,234,0.6); }
   .nav-divider { color: var(--text-muted); font-size: 14px; opacity: 0.5; }
 
@@ -1098,7 +1058,6 @@ const LP_PRO_STYLES = `
     display: flex; flex-direction: column; align-items: center; padding-top: 40px;
   }
   .mobile-nav-content { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 300px; text-align: center; }
-  
   .mobile-nav-link { color: var(--primary); font-size: 18px; font-weight: 600; text-decoration: none; border-bottom: 1px solid #333; padding-bottom: 15px; cursor: pointer; transition: 0.3s;}
   .mobile-nav-link:active { color: #fff; }
 
