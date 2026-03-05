@@ -4,10 +4,10 @@ import {
   Code2, Monitor, Smartphone, Globe, Layers, Settings, ShieldCheck, 
   PlayCircle, X, Terminal, AlertCircle, Cpu, Layout, Rocket,
   ChevronLeft, ChevronRight, ShoppingCart, Trash2, CreditCard, QrCode, Loader2, Lock, Unlock, Search, ExternalLink, MousePointerClick,
-  MapPin, Mail, GraduationCap, Users, UploadCloud, Plus, RotateCcw
+  MapPin, Mail, GraduationCap, Users, UploadCloud, Plus, RotateCcw, Menu
 } from 'lucide-react';
 
-// IMPORTAÇÃO CORRIGIDA BASEADA NA SUA TELA DO VS CODE
+// IMPORTAÇÃO DA IMAGEM
 import fotoPerfil from './assets/perfil.jpg';
 
 // =========================================================
@@ -105,7 +105,9 @@ export default function LandingPageDev() {
   const [adminTab, setAdminTab] = useState('agenda'); 
   const [isPromoAtiva, setIsPromoAtiva] = useState(new Date() < DATA_LIMITE);
   
-  // PROTEÇÃO CONTRA CRASH DE CACHE
+  // ESTADO DO MENU MOBILE
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const [agenda, setAgenda] = useState(() => {
     try {
       const salvo = localStorage.getItem('agenda_dev_pro_v5');
@@ -147,12 +149,9 @@ export default function LandingPageDev() {
   const [indiceAtual, setIndiceAtual] = useState(0);
 
   const [timeLeft, setTimeLeft] = useState({ dias: 0, horas: 0, min: 0, seg: 0 });
-  
-  // =========================================================
-  // MÁQUINA DE ESCREVER E ÁUDIO
-  // =========================================================
-  const fullText = "Marcos Software\nEngineering_"; 
   const [typedText, setTypedText] = useState('');
+  
+  const fullText = "Marcos Software\nEngineering_"; 
 
   const [audioTeclado] = useState(() => {
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -161,12 +160,10 @@ export default function LandingPageDev() {
     return audio;
   });
 
-  // Função para reiniciar a digitação pelo botão de reload
   const resetTyping = () => {
     setTypedText('');
   };
 
-  // Efeito principal (Hero)
   useEffect(() => {
     if (typedText.length < fullText.length) {
       const timeout = setTimeout(() => {
@@ -176,16 +173,13 @@ export default function LandingPageDev() {
     }
   }, [typedText, fullText]);
 
-  // Controle do Áudio Sincronizado
   useEffect(() => {
     const isTyping = typedText.length > 0 && typedText.length < fullText.length;
-
     if (isTyping) {
-      // Tenta tocar. Pode ser bloqueado na 1ª vez se o usuário não tiver clicado no site
       audioTeclado.play().catch(e => console.log("Áudio bloqueado pelo navegador até o primeiro clique."));
     } else {
       audioTeclado.pause();
-      audioTeclado.currentTime = 0; // Volta para o início
+      audioTeclado.currentTime = 0; 
     }
   }, [typedText, audioTeclado, fullText.length]);
 
@@ -235,7 +229,6 @@ export default function LandingPageDev() {
     }
   }, [agenda, diaSelecionado, diaAdmin]);
 
-  // FUNÇÕES DE ADMINISTRAÇÃO DO PORTFÓLIO
   const handleProjetoChange = (id, campo, valor) => {
     setProjetos(projetos.map(p => p.id === id ? { ...p, [campo]: valor } : p));
   };
@@ -275,7 +268,10 @@ export default function LandingPageDev() {
     setTelefone(v.substring(0, 15));
   };
 
-  const scrollToBooking = () => document.getElementById('agendamento')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBooking = () => {
+    setIsMobileMenuOpen(false); 
+    document.getElementById('agendamento')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const adicionarSessaoAoCarrinho = (e) => {
     e.preventDefault();
@@ -357,8 +353,8 @@ export default function LandingPageDev() {
       <header className="lp-navbar-fixed">
         <div className="container navbar-content">
           
-          {/* LOGO FIXA COMO SOLICITADO */}
-          <div className="logo-area clickable-profile" onClick={() => setIsAboutModalOpen(true)}>
+          {/* LOGO BLINDADA CONTRA TRADUÇÃO */}
+          <div className="logo-area clickable-profile notranslate" translate="no" onClick={() => setIsAboutModalOpen(true)}>
             <img 
               src={FOTO_PERFIL_MARCOS} 
               alt="Marcos" 
@@ -368,6 +364,23 @@ export default function LandingPageDev() {
             <span className="logo-text">Marcos<span className="primary-text">SoftwareEngineering</span>_</span>
           </div>
 
+          {/* NAVEGAÇÃO CENTRAL */}
+          {modo === 'cliente' && (
+            <nav className="top-nav hide-mobile">
+              <span className="nav-link" onClick={() => setIsAboutModalOpen(true)}>
+                <span className="nav-label-white">Sobre mim</span>
+              </span>
+              <span className="nav-divider">|</span>
+              <a href="mailto:contato@marvinsitbilders.com" className="nav-link">
+                <span className="nav-label-white">e-mail</span> contato@marvinsitbilders.com
+              </a>
+              <span className="nav-divider">|</span>
+              <a href="https://wa.me/5571987772415" target="_blank" rel="noreferrer" className="nav-link">
+                <span className="nav-label-white">cell</span> 71 98777-2415
+              </a>
+            </nav>
+          )}
+
           <div className="nav-actions">
             {modo === 'cliente' ? (
               <>
@@ -376,6 +389,11 @@ export default function LandingPageDev() {
                   <ShoppingCart size={24} color="#fff" />
                   {carrinho.length > 0 && <span className="cart-badge-count">{carrinho.length}</span>}
                 </div>
+                
+                {/* BOTÃO DO MENU HAMBURGUER */}
+                <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                  {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                </button>
               </>
             ) : (
               <span className="admin-badge">ADMIN MODE</span>
@@ -383,6 +401,27 @@ export default function LandingPageDev() {
           </div>
         </div>
       </header>
+
+      {/* OVERLAY DO MENU NO CELULAR */}
+      {isMobileMenuOpen && modo === 'cliente' && (
+        <div className="mobile-nav-overlay animate-fade" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="mobile-nav-content" onClick={e => e.stopPropagation()}>
+            <span className="mobile-nav-link" onClick={() => { setIsMobileMenuOpen(false); setIsAboutModalOpen(true); }}>
+              <span className="nav-label-white">Sobre mim</span>
+            </span>
+            <a href="mailto:contato@marvinsitbilders.com" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+              <span className="nav-label-white">e-mail</span> contato@marvinsitbilders.com
+            </a>
+            <a href="https://wa.me/5571987772415" target="_blank" rel="noreferrer" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+              <span className="nav-label-white">cell</span> 71 98777-2415
+            </a>
+            
+            <button className="btn-cta pulse-btn w-100 flex-center gap-10" style={{marginTop: '20px'}} onClick={scrollToBooking}>
+              CONTRATAR <Rocket size={18}/>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* MODAL SOBRE O ENGENHEIRO DE SOFTWARE */}
       {isAboutModalOpen && (
@@ -427,7 +466,10 @@ export default function LandingPageDev() {
                 <a href="mailto:contato@marvinsitbilders.com" className="btn-nav-outline w-100 flex-center gap-10">
                     <Mail size={18}/> contato@marvinsitbilders.com
                 </a>
-                <a href="https://www.marvinsitbilders.com" target="_blank" rel="noreferrer" className="btn-cta w-100 flex-center gap-10" style={{marginTop: '10px'}}>
+                <a href="https://wa.me/5571987772415" target="_blank" rel="noreferrer" className="btn-cta w-100 flex-center gap-10" style={{marginTop: '10px'}}>
+                    <Smartphone size={18}/> 71 98777-2415
+                </a>
+                <a href="https://www.marvinsitbilders.com" target="_blank" rel="noreferrer" className="btn-nav-outline w-100 flex-center gap-10" style={{marginTop: '10px', border: 'none', color: 'var(--text-muted)'}}>
                     <Globe size={18}/> Visitar marvinsitbilders.com
                 </a>
             </div>
@@ -678,13 +720,13 @@ export default function LandingPageDev() {
             </div>
           )}
 
-          {/* HERO COM TYPEWRITER EM DUAS LINHAS */}
+          {/* HERO COM TEXTO BLINDADO CONTRA TRADUÇÃO (Para não quebrar no Google Translate) */}
           <section className="hero-section-pro">
             <div className="container hero-grid">
               <div className="hero-text-content">
                 <div className="badge-lp"><Cpu size={14} /> Software Engineer</div>
                 
-                <h1 className="main-headline dynamic-typing" style={{minHeight: '130px', position: 'relative'}}>
+                <h1 className="main-headline dynamic-typing notranslate" translate="no" style={{minHeight: '130px', position: 'relative'}}>
                   <span style={{color: 'var(--text-main)'}}>
                     {typedText.split('\n').map((line, i, arr) => (
                       <React.Fragment key={i}>
@@ -694,10 +736,8 @@ export default function LandingPageDev() {
                     ))}
                   </span>
                   
-                  {/* Cursor que pisca junto com a digitação e fica no final */}
                   <span className="cursor-blink">|</span>
 
-                  {/* Botão de repetir aparece só quando termina de digitar */}
                   {typedText.length === fullText.length && (
                     <button onClick={resetTyping} className="btn-replay-typing" title="Repetir animação com áudio">
                       <RotateCcw size={20} />
@@ -1022,21 +1062,46 @@ const LP_PRO_STYLES = `
   .section-title { font-size: clamp(32px, 4vw, 42px); color: #fff; margin-bottom: 20px; font-weight: 800; letter-spacing: -1px; }
   .section-header-centered { text-align: center; margin-bottom: 50px; }
 
-  /* HEADER E LOGO AREA */
+  /* HEADER, LOGO E NAVEGAÇÃO */
   .lp-navbar-fixed { 
     position: fixed; top: 0; left: 0; width: 100%; height: 70px; 
     background: rgba(9, 9, 11, 0.9); backdrop-filter: blur(12px); 
     border-bottom: 1px solid var(--border-color); z-index: 1000; 
     display: flex; align-items: center;
   }
-  .navbar-content { display: flex; justify-content: space-between; align-items: center; }
-  .logo-area { display: flex; align-items: center; gap: 12px; }
+  .navbar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+  .logo-area { display: flex; align-items: center; gap: 12px; flex-shrink: 0;}
   .clickable-profile { cursor: pointer; transition: 0.3s; }
   .clickable-profile:hover { opacity: 0.8; transform: translateY(-1px); }
   .logo-img-circular { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(0,242,234,0.3); }
   .logo-text { font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -0.5px; font-family: monospace; }
-  .nav-actions { display: flex; align-items: center; gap: 15px; }
   
+  /* =========================================================
+     NAVEGAÇÃO SUPERIOR NO HEADER (VERDE/BRANCO)
+  ========================================================= */
+  .top-nav { display: flex; align-items: center; gap: 15px; margin: 0 auto; justify-content: center; flex: 1; }
+  .nav-link { color: var(--primary) !important; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; transition: color 0.3s ease, text-shadow 0.3s ease; }
+  .nav-label-white { color: #fff; margin-right: 4px; transition: 0.3s ease; }
+  .nav-link:hover, .nav-link:hover .nav-label-white { color: #ffffff !important; text-shadow: 0 0 8px rgba(0,242,234,0.6); }
+  .nav-divider { color: var(--text-muted); font-size: 14px; opacity: 0.5; }
+
+  .nav-actions { display: flex; align-items: center; gap: 15px; flex-shrink: 0;}
+  
+  /* =========================================================
+     MENU MOBILE (HAMBURGUER)
+  ========================================================= */
+  .mobile-menu-btn { display: none; background: transparent; border: none; color: #00f2ea; cursor: pointer; align-items: center; justify-content: center; padding: 5px; }
+
+  .mobile-nav-overlay {
+    position: fixed; top: 70px; left: 0; width: 100%; height: calc(100vh - 70px);
+    background: rgba(9,9,11,0.98); backdrop-filter: blur(10px); z-index: 999;
+    display: flex; flex-direction: column; align-items: center; padding-top: 40px;
+  }
+  .mobile-nav-content { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 300px; text-align: center; }
+  
+  .mobile-nav-link { color: var(--primary); font-size: 18px; font-weight: 600; text-decoration: none; border-bottom: 1px solid #333; padding-bottom: 15px; cursor: pointer; transition: 0.3s;}
+  .mobile-nav-link:active { color: #fff; }
+
   /* BOTÃO CONTRATAR COM ANIMAÇÃO PULSANTE CONSTANTE */
   .btn-nav-outline { 
     background: transparent; border: 1px solid var(--primary); color: var(--primary); 
@@ -1133,7 +1198,7 @@ const LP_PRO_STYLES = `
   .btn-cta:hover, .btn-confirm-final:hover { animation: gradient-flow 3s linear infinite; transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 40px rgba(0, 242, 234, 0.6); }
   .btn-confirm-final:disabled { background: #333; color: #777; cursor: not-allowed; animation: none; box-shadow: none; transform: none; }
 
-  /* CARDS INTERATIVOS E HOVER MANTIDOS */
+  /* CARDS INTERATIVOS E HOVER */
   .interactive-card { transition: all 0.3s ease; cursor: pointer; }
   .interactive-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0, 242, 234, 0.05); }
   .hover-float { animation: float 6s ease-in-out infinite; }
@@ -1141,7 +1206,7 @@ const LP_PRO_STYLES = `
   .hover-lift { transition: transform 0.3s ease; cursor: default; }
   .hover-lift:hover { transform: translateY(-4px); }
 
-  /* HERO SECTION MANTIDA */
+  /* HERO SECTION */
   .hero-section-pro { padding: 120px 0 80px; background: radial-gradient(circle at top right, #1a202c 0%, var(--bg-dark) 40%); }
   .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
   .badge-lp { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 234, 0.1); color: var(--primary); padding: 6px 12px; border-radius: 4px; font-weight: 600; margin-bottom: 20px; font-size: 12px; border: 1px solid rgba(0, 242, 234, 0.2); font-family: monospace; }
@@ -1396,14 +1461,14 @@ const LP_PRO_STYLES = `
   .time-chip.admin-chip.blocked { border-color: var(--red-blocked); color: var(--red-blocked); text-decoration: none; opacity: 1; background: rgba(239,68,68,0.05); pointer-events: auto; cursor: pointer;}
   .time-chip.admin-chip.blocked:hover { border-color: #ff6b6b; }
 
-  /* SUCCESS CARD FULL MANTIDO */
-  .success-card-full { text-align: center; background: var(--bg-card); padding: 60px 40px; border-radius: 20px; border: 1px solid var(--border-color); max-width: 500px; box-shadow: 0 0 50px rgba(0,242,234,0.1); }
-  .success-card-full h2 { font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 15px; letter-spacing: -1px; }
-  .success-card-full p { color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
+  /* ========================================= */
+  /* MEDIA QUERIES OTIMIZADAS PARA O MENU      */
+  /* ========================================= */
 
-  /* ========================================= */
-  /* MEDIA QUERIES OTIMIZADAS MANTIDAS         */
-  /* ========================================= */
+  @media (max-width: 1050px) {
+    .nav-link { font-size: 11px; }
+    .nav-label-white { margin-right: 2px; }
+  }
 
   @media (max-width: 992px) {
     .booking-main-grid, .admin-layout { grid-template-columns: 1fr; gap: 50px; }
@@ -1418,7 +1483,6 @@ const LP_PRO_STYLES = `
     .tech-badge.react { top: 20px; left: 0px; }
     .tech-badge.node { bottom: 20px; right: 0px; }
     
-    /* Modal Responsivo Otimizado MANTIDO */
     .portfolio-modal-content { flex-direction: column; text-align: center; gap: 30px; height: 90vh; overflow-y: auto; padding-bottom: 40px;}
     .mockup-frame { width: 280px; height: 560px; border-width: 12px;}
     .modal-actions { margin: 0 auto; }
@@ -1426,13 +1490,18 @@ const LP_PRO_STYLES = `
     .photo-frame:hover .photo-accent { top: 15px; right: -15px;}
     .btn-close-modal { top: 15px; right: 15px; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 5px;}
     
-    /* Admin Mobile Adjustments */
     .admin-project-body { grid-template-columns: 1fr; }
+  }
+
+  /* QUEBRA PARA TABLET/MOBILE (Faz os links do topo sumirem e aparece o botão Menu) */
+  @media (max-width: 850px) {
+     .hide-mobile { display: none !important; }
+     .mobile-menu-btn { display: flex !important; }
+     .top-nav { display: none !important; }
   }
 
   @media (max-width: 600px) {
     .lp-container-main { padding-top: 60px; }
-    .hide-mobile { display: none; }
     .logo-area { gap: 8px;}
     .logo-text { font-size: 14px; }
     .logo-img-circular { width: 30px; height: 30px;}
