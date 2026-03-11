@@ -1,16 +1,47 @@
-# React + Vite
+# 🚀 Landing Page Pro - Marcos Software Engineering
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Uma landing page interativa, responsiva e de alta conversão construída inteiramente em **React.js**. Muito mais que uma simples página de captura, este projeto atua como um mini-SaaS, possuindo um **Painel de Administração** integrado para gerenciar agendamentos e o portfólio de projetos dinamicamente.
 
-Currently, two official plugins are available:
+[➡️ Ver Projeto Online](#) *(Adicione o link do Vercel/Pages aqui)*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 💻 Sobre o Projeto
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O objetivo deste projeto é demonstrar habilidades avançadas em frontend, UX/UI moderno e gerenciamento de estado no React. Ele possui um design estilo "Dark Mode" com acentos em "Neon / Cyan", animações suaves, efeito de digitação em tempo real (com áudio) e navegação estilo "App".
 
-## Expanding the ESLint configuration
+### 🌟 Principais Funcionalidades
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+#### Visão do Cliente:
+* **Efeito "Dynamic Typing":** Título animado com som de teclado simulando código sendo escrito.
+* **Sistema de Agendamento:** Calendário interativo com seleção de datas e horários disponíveis.
+* **Carrinho e Checkout:** Fluxo completo para reservar uma sessão de briefing, incluindo simulação de pagamento (Pix/Cartão).
+* **Portfólio Interativo:** Galeria de projetos com visualização em mockup de celular (scroll hint) e tags dinâmicas.
+* **Modal de Perfil (Sobre Mim):** Interface no estilo "Twitter/X" exibindo estatísticas e links sociais.
+* **Timer Escassez:** Contagem regressiva para ofertas promocionais.
+
+#### Visão do Administrador (Painel de Controle):
+* **Gestão de Agenda:** Bloqueio e liberação de dias inteiros ou horários específicos para agendamento.
+* **Gerenciador de Portfólio (CRUD):** Adição, edição e remoção de projetos diretamente pelo painel.
+* **Upload via Drag & Drop:** Inserção de imagens de capa e mockups via leitura de arquivos locais.
+* **Persistência de Dados:** Todo o gerenciamento (agenda e projetos) é salvo automaticamente no `localStorage` do navegador.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+* **React.js:** Componentização, Hooks (`useState`, `useEffect`) e renderização condicional.
+* **JavaScript (ES6+):** Lógica de manipulação de datas, arrays e timers.
+* **Lucide React:** Biblioteca de ícones modernos e leves.
+* **CSS Nativo (CSS-in-JS Customizado):** Todo o estilo foi escrito em CSS puro (variáveis CSS, keyframes, flexbox, CSS Grid) incorporado no componente para facilitar a portabilidade.
+* **LocalStorage:** Banco de dados local para manter as alterações do administrador e disponibilidade de agenda.
+
+---
+
+## ⚙️ Como Executar Localmente
+
+Siga os passos abaixo para rodar o projeto na sua máquina:
+
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/SEU-USUARIO/NOME-DO-REPOSITORIO.git](https://github.com/SEU-USUARIO/NOME-DO-REPOSITORIO.git)
